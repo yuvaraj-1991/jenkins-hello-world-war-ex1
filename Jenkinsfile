@@ -19,7 +19,8 @@ pipeline {
             steps {
                 sh 'pwd'
                 sh 'ls'
-                sh 'mvn clean package'                
+                sh 'mvn clean package'         
+                sh 'ls'
             }
         }
         stage ('Deploy on Tomcat') {
