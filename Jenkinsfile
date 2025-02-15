@@ -14,5 +14,19 @@ pipeline {
                 sh 'mvn --version'
             }
         }
+        stage ('Build') {
+            agent { label 'node-slave' }
+            steps {
+                sh 'pwd'
+                sh 'ls'
+                sh 'mvn clean build'                
+            }
+        }
+        stage ('Deploy on Tomcat') {
+            agent { label 'node-slave' } 
+            steps {
+                sh 'echo "This is to copy to tomcat webapps folder"'            
+            }
+        }
     }
 }
