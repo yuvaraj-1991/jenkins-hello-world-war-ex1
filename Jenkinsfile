@@ -1,5 +1,8 @@
 pipeline {
     agent none 
+    environment {
+        ACCESS_CREDENTIALS = credentials('latest-jfrog-creds')
+    }
     stages {
         stage ('Checkout') {
             agent { label 'node-slave' }
@@ -15,23 +18,30 @@ pipeline {
             }
         }
         stage ('Package') {
+            agent{ label 'node-slave'}
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage ('Build & Deploy') {
             agent { label 'node-slave' }
             steps {
-                sh 'pwd'
-                sh 'ls'
-                sh 'mvn clean package'         
-                sh 'ls'
+                sh 'mkdir -p ~/.m2'
+                sh '''
+                    echo "
+                    <settings>
+                        <servers>
+                            <server>
+                                <id>test1hello-world-war-libs-release</id>
+                                <username>$ACCESS_CREDENTIALS_USR</username>
+                                <password>$ACCESS_CREDENTIALS_PSW</password>
+                            </server>    
+                        </servers>
+                    </settings>
+                    " > ~/.m2/settings.xml
+                '''
+                sh 'mvn clean deploy'
             }
-        }
-        stage ('Deploy on Tomcat') {
-            agent { label 'node-slave' } 
-            steps {
-                sh 'cd /home/ubuntu/jenkins/workspace/New-test1/target/'  
-                sh 'ls -l'
-                sh 'sudo cp -R /home/ubuntu/jenkins/workspace/New-test1/target/hello-world-war-${BUILD_NUMBER}.war /opt/tomcat/apache-tomcat-10.1.34/webapps/'
-                sh 'sudo bash /opt/tomcat/apache-tomcat-10.1.34/bin/.shutdown.sh'
-                sh 'sudo bash /opt/tomcat/apache-tomcat-10.1.34/bin/.startup.sh'
-            }
-        }
+        }        
     }
 }

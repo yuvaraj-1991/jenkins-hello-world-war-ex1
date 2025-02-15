@@ -8,6 +8,14 @@
 	<name>Hello World Web Application Repository</name>
 	<description>Simplest possible Java Webapp</description>
 
+	<distributionManagement>
+    	<repository>
+        	<id>test1hello-world-war-libs-release</id>
+        	<name>test1hello-world-war-libs-release</name>
+        	<url>http://3.90.222.155:8081/artifactory/test1hello-world-war-libs-release</url>
+    	</repository>
+	</distributionManagement>
+
 	<build>
 		<plugins>
 			<plugin>
