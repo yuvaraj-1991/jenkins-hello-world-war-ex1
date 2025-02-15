@@ -14,12 +14,12 @@ pipeline {
                 sh 'mvn --version'
             }
         }
-        stage ('Build') {
+        stage ('Package') {
             agent { label 'node-slave' }
             steps {
                 sh 'pwd'
                 sh 'ls'
-                sh 'mvn clean build'                
+                sh 'mvn clean package'                
             }
         }
         stage ('Deploy on Tomcat') {
